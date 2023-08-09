@@ -2,6 +2,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../Models/userSchema");
 const validator = require("validator");
+const bcrypt = require("bcrypt");
 
 // Admin authentication strategy
 passport.use(
@@ -15,11 +16,16 @@ passport.use(
         const user = await User.findOne({ email });
         if (!user) {
           return done(null, false, { message: "Incorrect email." });
+        } else {
+          if (user?.verified == false) {
+            return done(null, false, { message: "Verify your email first" });
+          }
+          const checkUser = await bcrypt.compare(password, user.password);
+          if (!checkUser) {
+            return done(null, false, { message: "Incorrect password." });
+          }
+          return done(null, user);
         }
-        if (user.password !== password) {
-          return done(null, false, { message: "Incorrect password." });
-        }
-        return done(null, user);
       } catch (err) {
         return done(err);
       }
