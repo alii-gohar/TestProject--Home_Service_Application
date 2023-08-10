@@ -1,4 +1,5 @@
 const Category = require("../Models/categorySchema");
+const Service = require("../Models/serviceSchema");
 
 const addCategory = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
@@ -16,7 +17,7 @@ const addCategory = async (req, res) => {
       return res.status(500).json({ error: "Something Went Wrong" });
     }
   } else {
-    return res.status(200).json({ error: "Invalid User" });
+    return res.status(400).json({ error: "Invalid User" });
   }
 };
 
@@ -36,11 +37,11 @@ const deleteCategory = async (req, res) => {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
-    return res.status(200).json({ error: "Invalid User" });
+    return res.status(400).json({ error: "Invalid User" });
   }
 };
 
-const approvedService = async (req, res) => {
+const approveService = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
       const id = req.params.id;
@@ -49,12 +50,13 @@ const approvedService = async (req, res) => {
         { status: "Approved", comment: null },
         { new: true }
       );
-      res.status(200).json(updatedRequest);
+      if (updatedRequest) res.status(200).json(updatedRequest);
+      else res.status(400).json({ error: "couldn't find Service" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
-    return res.status(200).json({ error: "Invalid User" });
+    return res.status(400).json({ error: "Invalid User" });
   }
 };
 
@@ -64,16 +66,17 @@ const rejectService = async (req, res) => {
       const id = req.params.id;
       const { comment } = req.body;
       const updatedRequest = await Service.findByIdAndUpdate(
-        req.params.id,
+        id,
         { status: "Rejected", comment },
         { new: true }
       );
-      res.status(200).json(updatedRequest);
+      if (updatedRequest) res.status(200).json(updatedRequest);
+      else res.status(400).json({ error: "couldn't find Service" });
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
-    return res.status(200).json({ error: "Invalid User" });
+    return res.status(400).json({ error: "Invalid User" });
   }
 };
 
@@ -87,14 +90,14 @@ const getServices = async (req, res) => {
       res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
-    return res.status(200).json({ error: "Invalid User" });
+    return res.status(400).json({ error: "Invalid User" });
   }
 };
 
 module.exports = {
   addCategory,
   deleteCategory,
-  approvedService,
+  approveService,
   rejectService,
   getServices,
 };
