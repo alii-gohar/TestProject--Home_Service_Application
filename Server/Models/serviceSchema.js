@@ -17,12 +17,6 @@ const serviceSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-    averageRating: {
-      type: Number,
-      min: 0, 
-      max: 5,
-      default:0,
-    },
   status: {
     type: String,
     default: "Pending",
@@ -37,7 +31,12 @@ const serviceSchema = new mongoose.Schema({
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category", // Specify the model name as a string
-  },
+  }, date: {
+    type: Date,
+    default: Date.now
+  },rating:{
+    type:[Number]
+  }
 });
 
 const Service = mongoose.model("Service", serviceSchema);

@@ -1,13 +1,15 @@
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
-const sellerRoutes = require("./Routes/sellerRoutes");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 
 const adminRoutes = require("./Routes/adminRoutes");
 const userRoutes = require("./Routes/userRoutes");
 const passport = require("./PassportAuthentication");
+const sellerRoutes = require("./Routes/sellerRoutes");
+const customerRoutes = require("./Routes/customerRoutes");
+
 //DB Connection
 const DbConnection = require("./mongoose");
 
@@ -33,6 +35,7 @@ app.use(passport.session());
 app.use("/admin", adminRoutes);
 app.use("/", userRoutes);
 app.use("/seller", sellerRoutes);
+app.use("/customer",customerRoutes);
 
 //connecting DataBase
 DbConnection();

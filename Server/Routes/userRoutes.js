@@ -1,7 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const { isUserAuthenticated ,shouldSignUp} = require("../Middleware/userAuthentication");
-
+const router = require("express").Router();
+const {
+  isUserAuthenticated,
+  shouldSignUp,
+} = require("../Middleware/userAuthentication");
 
 const { logout, login} = require("../Controllers/userControllers");
 
