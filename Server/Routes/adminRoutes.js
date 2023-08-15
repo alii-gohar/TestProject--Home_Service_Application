@@ -1,4 +1,4 @@
-const express = require("express");
+const router = require("express").Router();
 
 const {
   addCategory,
@@ -8,7 +8,6 @@ const {
   getServices,
 } = require("../Controllers/adminControllers");
 
-const router = express.Router();
 
 router.get("/getServices/:status", getServices);
 

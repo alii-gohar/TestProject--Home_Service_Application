@@ -14,7 +14,7 @@ const addCategory = async (req, res) => {
           .json({ error: "Something Went Wrong, Couldn't add Category" });
       }
     } catch (err) {
-      return res.status(500).json({ error: "Something Went Wrong" });
+      return res.status(500).json({ error: "Category name already exist" });
     }
   } else {
     return res.status(400).json({ error: "Invalid User" });
