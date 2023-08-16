@@ -1,15 +1,14 @@
 const mongoose = require("mongoose");
-
-
-const DbConnection = () => {
-  mongoose
-    .connect(process.env.DB_URL)
-    .then(() => {
-      console.log("Db connection successful");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+const DbConnection = async () => {
+  try {
+    const connection = await mongoose.connect(process.env.DB_URL);
+    if (connection) {
+      console.log("DB connected Successfully");
+      return true;
+    } else return false;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 };
-
 module.exports = DbConnection;

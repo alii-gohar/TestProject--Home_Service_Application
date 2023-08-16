@@ -3,8 +3,6 @@ const LocalStrategy = require("passport-local").Strategy;
 const User = require("../Models/userSchema");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-
-// Admin authentication strategy
 passport.use(
   "user",
   new LocalStrategy(
@@ -32,12 +30,10 @@ passport.use(
     }
   )
 );
-
 // Serialize and deserialize user data to maintain session
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
-
 passport.deserializeUser(async (id, done) => {
   try {
     let user = await User.findById(id);
@@ -46,5 +42,4 @@ passport.deserializeUser(async (id, done) => {
     done(err);
   }
 });
-
 module.exports = passport;

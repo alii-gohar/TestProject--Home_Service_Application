@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-
 // Function to send verification email
 const sendVerificationEmail = async (toEmail, verificationLink) => {
   try {
@@ -10,7 +9,7 @@ const sendVerificationEmail = async (toEmail, verificationLink) => {
         pass: process.env.PASSWORD,
       },
     });
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EMAIL,
       to: toEmail,
       subject: "Verify Your Email",
@@ -25,5 +24,4 @@ const sendVerificationEmail = async (toEmail, verificationLink) => {
     return false;
   }
 };
-
 module.exports = { sendVerificationEmail };

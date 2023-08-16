@@ -1,10 +1,8 @@
 const { sendVerificationEmail } = require("../EmailVerifier");
 const User = require("../Models/userSchema");
-
 const login = (req, res) => {
-  return res.status(200).json({ admin: req.user });
+  return res.status(200).json({ user: req.user });
 };
-
 const logout = (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -14,7 +12,6 @@ const logout = (req, res) => {
     }
   });
 };
-
 const signUp = async (req, res) => {
   try {
     if (req?.user) {
@@ -41,7 +38,6 @@ const signUp = async (req, res) => {
       .json({ error: "Something went wrong couldn't SignUp" });
   }
 };
-
 const confirmVerification = async (req, res) => {
   try {
     const id = req.params.id;
@@ -57,7 +53,6 @@ const confirmVerification = async (req, res) => {
     return res.status(400).json({ error: "Couldn't update User" });
   }
 };
-
 module.exports = {
   login,
   logout,

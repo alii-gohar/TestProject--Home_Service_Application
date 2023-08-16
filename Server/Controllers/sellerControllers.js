@@ -1,7 +1,6 @@
 const Review = require("../Models/reviewSchema");
 const Service = require("../Models/serviceSchema");
 const BookedService = require("../Models/bookedServices");
-
 const addService = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "seller") {
     try {
@@ -17,7 +16,6 @@ const addService = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const getServices = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     try {
@@ -30,7 +28,6 @@ const getServices = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const getService = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     try {
@@ -44,13 +41,11 @@ const getService = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const updateService = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     try {
       const id = req.params.id;
       const { title, description, location, price } = req.body;
-
       // Construct the update object with the fields you want to change
       const updateObject = {};
       if (title) updateObject.title = title;
@@ -64,7 +59,6 @@ const updateService = async (req, res) => {
         { $set: updateObject }, // Use $set to update specific fields
         { new: true } // Return the updated document
       );
-
       return res.status(200).json(updatedService);
     } catch (error) {
       return res.status(500).json({ error: "Server Error" });
@@ -73,7 +67,6 @@ const updateService = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const viewServiceReviews = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     const serviceId = req.params.id;
@@ -90,7 +83,6 @@ const viewServiceReviews = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const fetchBookedServicesForSeller = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "seller") {
     try {
@@ -102,17 +94,14 @@ const fetchBookedServicesForSeller = async (req, res) => {
       const bookedServicesForSeller = bookedServices.filter((bookedService) => {
         return bookedService.serviceId.sellerId.toString() === sellerId;
       });
-
       res.status(200).json({ bookedServices: bookedServicesForSeller });
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const completeOnGoingService = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "seller") {
     try {
@@ -122,14 +111,12 @@ const completeOnGoingService = async (req, res) => {
       });
       res.status(200).json(updatedBookedService);
     } catch (error) {
-      console.error(error);
       res.status(500).json({ error: "Internal Server Error" });
     }
   } else {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 module.exports = {
   addService,
   getServices,

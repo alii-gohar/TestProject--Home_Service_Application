@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const serviceSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -24,20 +23,27 @@ const serviceSchema = new mongoose.Schema({
   comment: {
     type: String,
   },
-  sellerId:{
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"Seller",
+  sellerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category", // Specify the model name as a string
-  }, date: {
+  },
+  date: {
     type: Date,
-    default: Date.now
-  },rating:{
-    type:[Number]
-  }
+    default: Date.now,
+  },
+  rating: {
+    type: [Number],
+  },
+  averageRating: {
+    type: Number,
+    default: 0,
+    max: 5,
+    min: 0,
+  },
 });
-
 const Service = mongoose.model("Service", serviceSchema);
 module.exports = Service;
