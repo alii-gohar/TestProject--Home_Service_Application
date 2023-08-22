@@ -1,6 +1,5 @@
 const Category = require("../Models/categorySchema");
 const Service = require("../Models/serviceSchema");
-
 const addCategory = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
@@ -20,7 +19,6 @@ const addCategory = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const deleteCategory = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
@@ -29,7 +27,6 @@ const deleteCategory = async (req, res) => {
       if (!cat) {
         return res.status(404).json({ error: "Category not found." });
       }
-
       return res
         .status(200)
         .json({ message: "Category deleted successfully." });
@@ -40,7 +37,6 @@ const deleteCategory = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const approveService = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
@@ -59,7 +55,6 @@ const approveService = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const rejectService = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
@@ -79,12 +74,13 @@ const rejectService = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
 const getServices = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     const status = req.params.status;
     try {
-      const services = await Service.find({ status });
+      const services = await Service.find({ status })
+        .populate("sellerId", "name")
+        .populate("categoryId", "name");
       res.status(200).json(services);
     } catch (error) {
       res.status(500).json({ error: "Internal Server Error" });
@@ -93,11 +89,23 @@ const getServices = async (req, res) => {
     return res.status(400).json({ error: "Invalid User" });
   }
 };
-
+const getCategories = async (req, res) => {
+  if (req.isAuthenticated() && req?.user?.role === "admin") {
+    try {
+      const services = await Category.find();
+      res.status(200).json(services);
+    } catch (error) {
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  } else {
+    return res.status(400).json({ error: "Invalid User" });
+  }
+};
 module.exports = {
   addCategory,
   deleteCategory,
   approveService,
   rejectService,
   getServices,
+  getCategories,
 };

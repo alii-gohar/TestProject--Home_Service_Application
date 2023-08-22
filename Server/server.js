@@ -2,20 +2,19 @@ const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 require("dotenv").config();
+const cors = require("cors");
 const cookieParser = require("cookie-parser");
-
-const adminRoutes = require("./Routes/adminRoutes");
-const userRoutes = require("./Routes/userRoutes");
 const passport = require("./PassportAuthentication");
-const sellerRoutes = require("./Routes/sellerRoutes");
-const customerRoutes = require("./Routes/customerRoutes");
-
 //DB Connection
 const DbConnection = require("./mongoose");
-
+const router = require("./Routes");
 //initializing app
 const app = express();
-
+const corsOption = {
+  origin: process.env.CLIENT_ORIGIN,
+  credentials: true,
+};
+app.use(cors(corsOption));
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -24,22 +23,22 @@ app.use(
     secret: process.env.SECRET_KEY,
     resave: false,
     saveUninitialized: false,
-    cookieSecret: "mySecret",
+    cookie: {
+      sameSite: "lax",
+    },
   })
 );
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(router)
 //Route Setup
-app.use("/admin", adminRoutes);
-app.use("/", userRoutes);
-app.use("/seller", sellerRoutes);
-app.use("/customer",customerRoutes);
 
 //connecting DataBase
-DbConnection();
-
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
-});
+const dbConnection = DbConnection();
+if (dbConnection) {
+  app.listen(process.env.PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`);
+  });
+} else console.log("Couldn't Start Server DB Connection Failed");
