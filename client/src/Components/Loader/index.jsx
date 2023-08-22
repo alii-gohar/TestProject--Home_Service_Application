@@ -1,4 +1,4 @@
-import "./index.css"; // Import your CSS file for styling
+import "./index.css"; 
 function Loader() {
   return (
     <div className="loader-container">

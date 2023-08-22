@@ -31,10 +31,8 @@ app.use(
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(router)
 //Route Setup
-
 //connecting DataBase
 const dbConnection = DbConnection();
 if (dbConnection) {

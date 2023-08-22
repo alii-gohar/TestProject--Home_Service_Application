@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bookedServiceSchema = new mongoose.Schema({
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Customer",
+    ref: "User",
   },
   serviceId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -17,6 +17,10 @@ const bookedServiceSchema = new mongoose.Schema({
     default: "OnGoing",
     enum: ["OnGoing", "Completed"],
   },
+  reviewed:{
+    type:Boolean,
+    default:false,
+  }
 });
 const BookedService = mongoose.model("BookedService", bookedServiceSchema);
 module.exports = BookedService;

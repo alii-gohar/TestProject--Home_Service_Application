@@ -19,7 +19,10 @@ const addService = async (req, res) => {
 const getServices = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     try {
-      const services = await Service.find({ sellerId: req.user?.id });
+      const services = await Service.find({ sellerId: req.user?.id }).populate(
+        "categoryId",
+        "name"
+      );
       return res.status(200).json(services);
     } catch (error) {
       return res.status(500).json({ error: "Server Error" });
@@ -45,14 +48,16 @@ const updateService = async (req, res) => {
   if (req.isAuthenticated() && req.user?.role === "seller") {
     try {
       const id = req.params.id;
-      const { title, description, location, price } = req.body;
+      const { title, description, location, price, categoryId } = req.body;
       // Construct the update object with the fields you want to change
       const updateObject = {};
       if (title) updateObject.title = title;
       if (description) updateObject.description = description;
       if (location) updateObject.location = location;
       if (price) updateObject.price = price;
+      if (categoryId) updateObject.categoryId = categoryId;
       updateObject.status = "Pending";
+      updateObject.comment = null;
 
       const updatedService = await Service.findByIdAndUpdate(
         id,
@@ -73,7 +78,9 @@ const viewServiceReviews = async (req, res) => {
     try {
       const reviews = await Review.find({
         serviceId: serviceId,
-      });
+      })
+        .populate("customerId", "name")
+        .populate("serviceId", "title");
 
       return res.status(200).json(reviews);
     } catch (error) {
@@ -88,9 +95,15 @@ const fetchBookedServicesForSeller = async (req, res) => {
     try {
       const sellerId = req.user.id;
       const status = req.params.status;
-      const bookedServices = await BookedService.find({
-        status: status,
-      }).populate("serviceId");
+      const bookedServices = await BookedService.find({ status: status })
+        .populate({
+          path: "serviceId",
+          populate: {
+            path: "categoryId",
+            select: "name", // Select the fields you want to populate from categoryId
+          },
+        })
+        .populate("customerId", "name");
       const bookedServicesForSeller = bookedServices.filter((bookedService) => {
         return bookedService.serviceId.sellerId.toString() === sellerId;
       });

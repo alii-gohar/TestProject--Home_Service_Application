@@ -22,6 +22,7 @@ const serviceSchema = new mongoose.Schema({
   },
   comment: {
     type: String,
+    default: null,
   },
   sellerId: {
     type: mongoose.Schema.Types.ObjectId,

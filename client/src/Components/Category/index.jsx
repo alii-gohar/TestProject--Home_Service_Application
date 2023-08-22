@@ -1,29 +1,14 @@
 import { useState, useEffect } from "react";
-import {
-  MDBTable,
-  MDBTableHead,
-  MDBTableBody,
-  MDBInput,
-} from "mdb-react-ui-kit";
+import { MDBInput } from "mdb-react-ui-kit";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import axiosCall from "../../AxiosCall";
-
+import GenericTable from "../Table/Table";
 const Categories = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
   const [modal, setModal] = useState(false);
   const [categoryName, setCategoryName] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(data.length / itemsPerPage);
-  const pageNumbers = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
-  );
+  const [deleted, setDeleted] = useState(false);
   const toggle = () => setModal(!modal);
   useEffect(() => {
     const fetchData = async () => {
@@ -36,27 +21,22 @@ const Categories = () => {
       }
     };
     fetchData();
-  }, []);
-  const handleDelete = async (e) => {
-    e.preventDefault();
+  }, [deleted]);
+  const handleDelete = async (id) => {
     try {
       const response = await axiosCall(
         "DELETE",
         "admin/deleteCategory",
         {},
-        e.target.id
+        id
       );
-      setIsDeleting(true);
       if (response.status === 200) {
-        setMessage("Data deleted successfully!");
-        setData((prevData) =>
-          prevData.filter((item) => item._id !== e.target.id)
-        );
+        setMessage(response.data.message);
+        setDeleted(!deleted);
       } else setMessage(response?.response?.data?.error);
     } catch (error) {
       setMessage("Error deleting data");
     } finally {
-      setIsDeleting(false);
       setTimeout(function () {
         setMessage("");
       }, 1500);
@@ -75,6 +55,11 @@ const Categories = () => {
       setMessage("Error Adding Category");
     }
   };
+  const tableHead = ["Title", "Delete"];
+  const tableData = data.map((item) => [item.name]);
+  const dataIds = data.map((item) => [item._id]);
+  const buttons = ["Delete"];
+  const buttonFunctions = [handleDelete];
   return (
     <div>
       <p className="text-center text-danger">{message}</p>
@@ -90,65 +75,22 @@ const Categories = () => {
         </button>
       </div>
       <div className="d-flex justify-content-center align-items-center">
-        <MDBTable className="w-75">
-          <MDBTableHead>
-            <tr>
-              <th scope="col">Sr. No</th>
-              <th scope="col">Title</th>
-              <th scope="col">Delete</th>
-            </tr>
-          </MDBTableHead>
-          <MDBTableBody>
-            {currentItems.map((item, index) => (
-              <tr key={item._id}>
-                <td>
-                  <div className="d-flex align-items-center">
-                    <div className="ms-3">
-                      <p key={item._id} className="fw-bold mb-1">
-                        {index + 1 + (currentPage - 1) * itemsPerPage}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <p key={item._id} className="fw-normal mb-1">
-                    {item.name}
-                  </p>
-                </td>
-                <td>
-                  <button
-                    id={item._id}
-                    className="me-1 btn btn-danger"
-                    color="danger"
-                    size="sm"
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </MDBTableBody>
-        </MDBTable>
+        <div className="vh-100 w-75">
+          {data.length < 1 ? (
+            <h1 className="text-center fw-bold">No Categories yet</h1>
+          ) : (
+            <GenericTable
+              tableData={tableData}
+              tableHead={tableHead}
+              buttons={buttons}
+              buttonFunctions={buttonFunctions}
+              dataIds={dataIds}
+              modal={modal}
+              setModal={setModal}
+            />
+          )}
+        </div>
       </div>
-      <nav className="d-flex justify-content-center align-items-center">
-        <ul className="pagination">
-          {pageNumbers.length > 1 &&
-            pageNumbers.map((number) => (
-              <li key={number} className="page-item">
-                <button
-                  className={`page-link ${
-                    currentPage === number ? "active" : ""
-                  } mx-1`}
-                  onClick={() => setCurrentPage(number)}
-                >
-                  {number}
-                </button>
-              </li>
-            ))}
-        </ul>
-      </nav>
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>Add Category</ModalHeader>
         <ModalBody>
