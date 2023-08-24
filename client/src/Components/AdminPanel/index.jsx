@@ -1,11 +1,15 @@
 import { useEffect } from "react";
-import "./index.css";
 import { Link, useNavigate } from "react-router-dom";
+
+import "./index.css";
+import roles from "../../Utils/Roles";
+import logedInUser from "../../Utils/LoginUser";
+
 const AdminPanel = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = logedInUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!(user && user?.role === "admin")) navigate("/");
+    if (!(user && user?.role === roles.admin)) navigate("/");
   }, [navigate, user]);
   return (
     <>

@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import { MDBInput } from "mdb-react-ui-kit";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
-import axiosCall from "../../AxiosCall";
+
+import axiosCall from "../../Utils/AxiosCall";
 import GenericTable from "../Table/Table";
+
 const Categories = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
   const [modal, setModal] = useState(false);
   const [categoryName, setCategoryName] = useState("");
   const [deleted, setDeleted] = useState(false);
-  const toggle = () => setModal(!modal);
+  const handleModalPopup = () => setModal(!modal);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosCall("GET", "admin/getCategories");
+        const response = await axiosCall("GET", "admin/categories");
         if (response.status === 200) setData(response.data);
         else setMessage(response?.response?.data?.error);
       } catch (error) {
@@ -24,12 +27,7 @@ const Categories = () => {
   }, [deleted]);
   const handleDelete = async (id) => {
     try {
-      const response = await axiosCall(
-        "DELETE",
-        "admin/deleteCategory",
-        {},
-        id
-      );
+      const response = await axiosCall("DELETE", "admin/category", {}, id);
       if (response.status === 200) {
         setMessage(response.data.message);
         setDeleted(!deleted);
@@ -42,10 +40,10 @@ const Categories = () => {
       }, 1500);
     }
   };
-  const addCategory = async (e) => {
+  const handleNewCategory = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosCall("POST", "admin/addCategory", {
+      const response = await axiosCall("POST", "admin/category", {
         name: categoryName,
       });
       if (response.status === 200) {
@@ -91,10 +89,10 @@ const Categories = () => {
           )}
         </div>
       </div>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add Category</ModalHeader>
+      <Modal isOpen={modal} toggle={handleModalPopup}>
+        <ModalHeader toggle={handleModalPopup}>Add Category</ModalHeader>
         <ModalBody>
-          <form onSubmit={addCategory}>
+          <form onSubmit={handleNewCategory}>
             <MDBInput
               wrapperClass="mb-4"
               label="Category Name"
@@ -109,7 +107,7 @@ const Categories = () => {
             <div className="d-flex justify-content-end">
               <button
                 className="btn btn-primary "
-                onClick={toggle}
+                onClick={handleModalPopup}
                 type="submit"
               >
                 Add Category

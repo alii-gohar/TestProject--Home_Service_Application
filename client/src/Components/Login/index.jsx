@@ -10,7 +10,11 @@ import {
   MDBInput,
 } from "mdb-react-ui-kit";
 import { useNavigate } from "react-router-dom";
-import axiosCall from "../../AxiosCall";
+
+import axiosCall from "../../Utils/AxiosCall";
+import logedInUser from "../../Utils/LoginUser";
+import roles from "../../Utils/Roles";
+
 const LoginForm = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -18,14 +22,20 @@ const LoginForm = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = logedInUser();
+
+  const handlePanel = (role) => {
+    if (role === roles.admin) return "/admin_panel";
+    else if (role === roles.customer) return "/customer_panel";
+    else return "/seller_panel";
+  };
+
   useEffect(() => {
-    if (user) {
-      if (user?.role === "admin") navigate("/admin_panel");
-      else if (user?.role === "seller") navigate("/seller_panel");
-      else if (user?.role === "customer") navigate("/customer_panel");
+    if (user && user.role) {
+      navigate(handlePanel(user.role));
     }
   });
+
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -38,9 +48,7 @@ const LoginForm = () => {
           })
         );
         const role = response.data.user.role;
-        if (role === "admin") navigate("/admin_panel");
-        else if (role === "seller") navigate("/seller_panel");
-        else if (role === "customer") navigate("/customer_panel");
+        navigate(handlePanel(role));
       } else {
         setError(response?.response?.data?.error);
       }
@@ -59,6 +67,7 @@ const LoginForm = () => {
       [name]: value,
     }));
   };
+
   return (
     <MDBContainer className=" vh-100">
       <MDBCard>
@@ -85,9 +94,11 @@ const LoginForm = () => {
               </div>
               <h6 className="text-danger">{error}</h6>
               <form onSubmit={handleLogin}>
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                </label>
                 <MDBInput
                   wrapperClass="mb-4"
-                  label="Email address"
                   type="email"
                   size="lg"
                   required
@@ -95,9 +106,11 @@ const LoginForm = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                 />
+                <label htmlFor="password" className="form-label">
+                  Password
+                </label>
                 <MDBInput
                   wrapperClass="mb-4"
-                  label="Password"
                   type="password"
                   size="lg"
                   required
@@ -116,7 +129,7 @@ const LoginForm = () => {
               </form>
               <p className="mb-5 pb-lg-2" style={{ color: "#393f81" }}>
                 Don't have an account?{" "}
-                <a href="#!" style={{ color: "#393f81" }}>
+                <a href="/signup" style={{ color: "#393f81" }}>
                   Register here
                 </a>
               </p>

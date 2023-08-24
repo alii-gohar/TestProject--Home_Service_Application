@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import Loader from "./Loader";
 import { useLocation, useNavigate } from "react-router";
-import axiosCall from "../AxiosCall";
+import axiosCall from "../Utils/AxiosCall";
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(useLocation().search);

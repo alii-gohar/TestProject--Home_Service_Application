@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import axiosCall from "../../AxiosCall";
-import GenericTable from "../Table/Table";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
 import { MDBInput } from "mdb-react-ui-kit";
+
+import axiosCall from "../../Utils/AxiosCall";
+import GenericTable from "../Table/Table";
+
 const CustomerBookedServices = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
@@ -12,14 +14,15 @@ const CustomerBookedServices = () => {
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(0);
   const [serviceId, setServiceId] = useState("");
-  const toggle = () => setModal(!modal);
+  const handleModalPopup = () => setModal(!modal);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const url =
           ServiceStatus === "OnGoing"
-            ? "customer/viewOnGoingServices"
-            : "customer/viewCompletedServices";
+            ? "customer/onGoingServices"
+            : "customer/completedServices";
         const response = await axiosCall("GET", url);
         if (response.status === 200) setData(response.data.onGoingServices);
         else setMessage(response?.response?.data?.error);
@@ -33,12 +36,13 @@ const CustomerBookedServices = () => {
     };
     fetchData();
   }, [ServiceStatus, shouldUpdate]);
-  const addReview = async (e) => {
+
+  const handleNewReview = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosCall(
         "POST",
-        "customer/addReview",
+        "customer/review",
         { rating: rating, review: comment },
         serviceId
       );
@@ -56,10 +60,11 @@ const CustomerBookedServices = () => {
       setRating(0);
     }
   };
-  const setService = (id) => {
+
+  const handleServiceId = (id) => {
     setServiceId(id[0]);
     const service = data.filter((item) => item._id === id[0]);
-    if (service[0]?.reviewed === false) toggle();
+    if (service[0]?.reviewed === false) handleModalPopup();
     else window.alert("Review Already Given");
   };
   const tableHead = ["Title", "Seller", "Category", "Status"];
@@ -70,8 +75,9 @@ const CustomerBookedServices = () => {
     item.status,
   ]);
   const tableButtons = ["Give Review"];
-  const tableButtonFunctions = [setService];
+  const tableButtonFunctions = [handleServiceId];
   const dataIds = data.map((item) => [item._id]);
+
   return (
     <div>
       <h1 className="text-center">
@@ -125,13 +131,15 @@ const CustomerBookedServices = () => {
           </div>
         )}
       </div>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Add Review</ModalHeader>
+      <Modal isOpen={modal} toggle={handleModalPopup}>
+        <ModalHeader toggle={handleModalPopup}>Add Review</ModalHeader>
         <ModalBody>
-          <form onSubmit={addReview}>
+          <form onSubmit={handleNewReview}>
+            <label htmlFor="review" className="form-label">
+              Review
+            </label>
             <MDBInput
               wrapperClass="mb-4"
-              label="Review"
               type="text"
               size="lg"
               value={comment}
@@ -160,7 +168,7 @@ const CustomerBookedServices = () => {
             <div className="d-flex justify-content-end">
               <button
                 className="btn btn-primary "
-                onClick={toggle}
+                onClick={handleModalPopup}
                 type="submit"
               >
                 Add Review

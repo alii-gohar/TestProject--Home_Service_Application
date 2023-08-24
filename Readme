@@ -1,0 +1,25 @@
+# Home Service Application
+
+The Home Service Application is a platform where sellers can register their services, and customers can easily book and avail them. Services such as cleaning, electrician, plumbing, paint, and more are available. An admin can approve or reject newly added services by sellers, and customers can review and rate their experiences after availing a service.
+
+## Features
+
+The Home Service Application offers the following features:
+
+- User Registration and Authorization (Customers, Sellers)
+- User Login with email and password
+- Email Confirmation
+- Login Lockout on incorrect attempts
+- Customer Dashboard:
+  - Browse and search services by category
+  - Book services
+  - Rate and review services
+  - View ongoing and completed services
+- Admin Dashboard:
+  - Manage service categories
+  - Approve or reject new services
+  - View approved and rejected services
+- Seller Dashboard:
+  - Manage individual services
+  - Resolve admin comments on rejected services
+  - Request re-approval for rejected services
