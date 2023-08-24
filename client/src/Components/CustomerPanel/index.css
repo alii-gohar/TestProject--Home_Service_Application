@@ -1,0 +1,9 @@
+.sp-home {
+  position: relative;
+  height: 80vh;
+  width: 100%;
+  background-image: url("../../../public/Images/SignUp-1.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}

@@ -1,7 +1,12 @@
-import React from "react";
+import { useEffect } from "react";
 import "./index.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const AdminPanel = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!(user && user?.role === "admin")) navigate("/");
+  }, [navigate, user]);
   return (
     <>
       <div className="ap-home d-flex align-items-center justify-content-center mb-5">

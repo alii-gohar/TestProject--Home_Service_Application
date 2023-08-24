@@ -1,0 +1,18 @@
+.review-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+  max-height: 600px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.review {
+  display: grid;
+  place-content: center;
+  background-color: rgb(248, 241, 232);
+  padding: 10px 0px;
+  border-radius: 10px; /* Adjust the value to control the amount of rounding */
+  border: 2px solid #ccc;
+}

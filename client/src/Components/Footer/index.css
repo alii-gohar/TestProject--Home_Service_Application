@@ -1,0 +1,14 @@
+/* Footer.css */
+.footer {
+  margin-top: 70px;
+  background-color: #adadad; /* Grey background color */
+  height: 100px; /* Adjust the height as needed */
+  color: #000000; /* Text color */
+  display: flex;
+  width: 100%;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

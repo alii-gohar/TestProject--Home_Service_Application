@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MDBContainer,
   MDBCard,
@@ -18,15 +18,29 @@ const LoginForm = () => {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user"));
+  useEffect(() => {
+    if (user) {
+      if (user?.role === "admin") navigate("/admin_panel");
+      else if (user?.role === "seller") navigate("/seller_panel");
+      else if (user?.role === "customer") navigate("/customer_panel");
+    }
+  });
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosCall("POST", "login", formData);
       if (response.status === 200) {
-        console.log(response.data.user);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            role: response.data.user.role,
+          })
+        );
         const role = response.data.user.role;
         if (role === "admin") navigate("/admin_panel");
         else if (role === "seller") navigate("/seller_panel");
+        else if (role === "customer") navigate("/customer_panel");
       } else {
         setError(response?.response?.data?.error);
       }
@@ -36,10 +50,6 @@ const LoginForm = () => {
       setTimeout(() => {
         setError("");
       }, 2000);
-      setFormData({
-        email: "",
-        password: "",
-      });
     }
   };
   const handleInputChange = (e) => {
@@ -50,7 +60,7 @@ const LoginForm = () => {
     }));
   };
   return (
-    <MDBContainer className="my-5">
+    <MDBContainer className=" vh-100">
       <MDBCard>
         <MDBRow className="g-0">
           <MDBCol md="6">

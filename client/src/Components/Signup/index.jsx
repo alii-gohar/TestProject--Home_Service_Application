@@ -61,7 +61,7 @@ const SignUp = () => {
     <MDBContainer className="d-flex justify-content-center align-items-center">
       <MDBRow className="d-flex justify-content-center align-items-center">
         <MDBCol md="10" lg="8">
-          <MDBCard className="my-5 rounded-3">
+          <MDBCard className="rounded-3">
             <MDBCardImage
               src="Images/Signup.jpg"
               className="w-100 rounded-top"

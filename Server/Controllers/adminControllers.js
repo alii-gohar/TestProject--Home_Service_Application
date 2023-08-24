@@ -23,13 +23,22 @@ const deleteCategory = async (req, res) => {
   if (req.isAuthenticated() && req?.user?.role === "admin") {
     try {
       const categoryId = req.params.id;
-      const cat = await Category.deleteOne({ _id: categoryId });
-      if (!cat) {
-        return res.status(404).json({ error: "Category not found." });
-      }
-      return res
-        .status(200)
-        .json({ message: "Category deleted successfully." });
+      const isService = await Service.find({ categoryId });
+      if (isService.length === 0) {
+        const cat = await Category.deleteOne({ _id: categoryId });
+        if (!cat) {
+          return res.status(404).json({ error: "Category not found." });
+        }
+        return res
+          .status(200)
+          .json({ message: "Category deleted successfully." });
+      } else
+        return res
+          .status(200)
+          .json({
+            message:
+              "Cannot Delete Category as it has Services Associated to it",
+          });
     } catch (err) {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -90,7 +99,7 @@ const getServices = async (req, res) => {
   }
 };
 const getCategories = async (req, res) => {
-  if (req.isAuthenticated() && req?.user?.role === "admin") {
+  if (req.isAuthenticated()) {
     try {
       const services = await Category.find();
       res.status(200).json(services);
