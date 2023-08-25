@@ -1,11 +1,15 @@
 import React, { useEffect } from "react";
-import "./index.css";
 import { Link, useNavigate } from "react-router-dom";
+
+import "./index.css";
+import logedInUser from "../../Utils/LoginUser";
+import roles from "../../Utils/Roles";
+
 const SellerPanel = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = logedInUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!(user && user?.role === "seller")) navigate("/");
+    if (!(user && user?.role === roles.seller)) navigate("/");
   }, [navigate, user]);
   return (
     <>

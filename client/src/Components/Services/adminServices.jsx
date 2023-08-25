@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { MDBInput } from "mdb-react-ui-kit";
 import { Modal, ModalBody, ModalHeader } from "reactstrap";
-import axiosCall from "../../AxiosCall";
+
+import axiosCall from "../../Utils/AxiosCall";
 import { useLocation } from "react-router-dom";
 import GenericTable from "../Table/Table";
+
 const Services = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
@@ -12,7 +14,8 @@ const Services = () => {
   const [serviceId, setServiceId] = useState("");
   const [shouldUpdate, setShouldUpdate] = useState(false);
   const location = useLocation().pathname;
-  const toggle = () => setModal(!modal);
+  const handleModalPopup = () => setModal(!modal);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,12 +25,7 @@ const Services = () => {
           : location === "/viewApprovedServices"
           ? (status = "Approved")
           : (status = "Rejected");
-        const response = await axiosCall(
-          "GET",
-          "admin/getServices",
-          {},
-          status
-        );
+        const response = await axiosCall("GET", "admin/services", {}, status);
         if (response.status === 200) setData(response.data);
         else setMessage(response?.response?.data?.error);
       } catch (error) {
@@ -36,7 +34,8 @@ const Services = () => {
     };
     fetchData();
   }, [location, shouldUpdate]);
-  const approveService = async (id) => {
+
+  const handleApproveService = async (id) => {
     try {
       const response = await axiosCall("PUT", "admin/approveService", {}, id);
       if (response.status === 200) {
@@ -51,11 +50,13 @@ const Services = () => {
       setShouldUpdate(!shouldUpdate);
     }
   };
-  const openRejectModal = (id) => {
+
+  const handleRejectModalPopup = (id) => {
     setServiceId(id);
-    toggle();
+    handleModalPopup();
   };
-  const rejectService = async (e) => {
+
+  const handleRejectService = async (e) => {
     e.preventDefault();
     try {
       const response = await axiosCall(
@@ -67,7 +68,6 @@ const Services = () => {
       if (response.status === 200) {
         setMessage("Service Rejected Successfully");
       } else setMessage(response?.response?.data?.error);
-      // Update UI logic here
     } catch (error) {
       setMessage("Error Rejecting Service");
     } finally {
@@ -99,7 +99,10 @@ const Services = () => {
     item.categoryId?.name,
   ]);
   const servicesTableButtons = ["Approve", "Reject"];
-  const servicesTableButtonFunctions = [approveService, openRejectModal];
+  const servicesTableButtonFunctions = [
+    handleApproveService,
+    handleRejectModalPopup,
+  ];
   const dataIds = data.map((item) => [item._id]);
   return (
     <div>
@@ -147,13 +150,17 @@ const Services = () => {
           )}
         </div>
       </div>
-      <Modal isOpen={modal} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Reason to Reject Service</ModalHeader>
+      <Modal isOpen={modal} toggle={handleModalPopup}>
+        <ModalHeader toggle={handleModalPopup}>
+          Reason to Reject Service
+        </ModalHeader>
         <ModalBody>
-          <form onSubmit={rejectService}>
+          <form onSubmit={handleRejectService}>
+            <label htmlFor="reason" className="form-label">
+              Reason
+            </label>
             <MDBInput
               wrapperClass="mb-4"
-              label="Reason"
               type="text"
               size="lg"
               value={comment}
@@ -164,7 +171,7 @@ const Services = () => {
             <div className="d-flex justify-content-end">
               <button
                 className="btn btn-primary "
-                onClick={toggle}
+                onClick={handleModalPopup}
                 type="submit"
               >
                 Add Comment

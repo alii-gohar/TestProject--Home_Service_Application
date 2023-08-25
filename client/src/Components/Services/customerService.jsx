@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import axiosCall from "../../AxiosCall";
+
+import axiosCall from "../../Utils/AxiosCall";
 import GenericTable from "../Table/Table";
-import makePayment from "../../Payment";
+import makePayment from "../../Utils/Payment";
 import Loader from "../Loader";
+
 const CustomerServices = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
@@ -10,10 +12,11 @@ const CustomerServices = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [sortAscending, setSortAscending] = useState(true);
   const [isBooking, setIsBooking] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosCall("GET", "customer/viewAllServices");
+        const response = await axiosCall("GET", "customer/services");
         if (response.status === 200) {
           setData(response.data.services);
         } else {
@@ -23,9 +26,10 @@ const CustomerServices = () => {
         setMessage(error.response?.data?.error);
       }
     };
+
     const fetchCategories = async () => {
       try {
-        const response = await axiosCall("GET", "admin/getCategories");
+        const response = await axiosCall("GET", "admin/categories");
         setCategories(response.data);
       } catch (error) {
         setMessage(error.response?.data?.error);
@@ -41,9 +45,11 @@ const CustomerServices = () => {
   const handleSortChange = () => {
     setSortAscending((prevState) => !prevState);
   };
+
   const handleCategoryChange = (event) => {
     setSelectedCategory(event.target.value);
   };
+  
   const sortedData = data.slice().sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);

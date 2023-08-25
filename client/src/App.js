@@ -13,8 +13,30 @@ import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import CustomerBookedServices from "./Components/Services/customerBookedServices";
 import PaymentSuccess from "./Components/PaymentSuccess";
-import PrivateRoutes from "./ProtectedRoutes";
+import PrivateRoutes from "./Utils/ProtectedRoutes";
 const App = () => {
+
+  const sellerRoutes = [
+    { path: "/seller_panel", element: <SellerPanel /> },
+    { path: "/viewSellerServices", element: <SellerServices /> },
+    { path: "/viewSellerBookedServices", element: <BookedServices /> },
+  ];
+  const adminRoutes = [
+    { path: "/admin_panel", element: <AdminPanel /> },
+    { path: "/viewCategories", element: <Categories /> },
+    { path: "/viewNewServices", element: <AdminServices /> },
+    { path: "/viewRejectedServices", element: <AdminServices /> },
+    { path: "/viewApprovedServices", element: <AdminServices /> },
+  ];
+  const customerRoutes = [
+    { path: "/customer_panel", element: <CustomerPanel /> },
+    { path: "/viewCustomerServices", element: <CustomerServices /> },
+    { path: "/successfulPayment", element: <PaymentSuccess /> },
+    {
+      path: "/viewCustomerBookedServices",
+      element: <CustomerBookedServices />,
+    },
+  ];
   return (
     <Router>
       <div>
@@ -22,35 +44,25 @@ const App = () => {
         <Routes>
           <Route path="/" element={<LoginForm />} />
           <Route path="/signup" element={<SignUp />} />
+
           <Route element={<PrivateRoutes role="admin" />}>
-            <Route path="/admin_panel" element={<AdminPanel />} />
-            <Route path="/viewCategories" element={<Categories />} />
-            <Route path="/viewNewServices" element={<AdminServices />} />
-            <Route path="/viewRejectedServices" element={<AdminServices />} />
-            <Route path="/viewApprovedServices" element={<AdminServices />} />
+            {adminRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
           </Route>
-          <Route element={<PrivateRoutes role={"seller"} />}>
-            <Route path="/seller_panel" element={<SellerPanel />} />
-            <Route path="/viewSellerServices" element={<SellerServices />} />
-            <Route
-              path="/viewSellerBookedServices"
-              element={<BookedServices />}
-            />
+
+          <Route element={<PrivateRoutes role="seller" />}>
+            {sellerRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
           </Route>
+
           <Route element={<PrivateRoutes role="customer" />}>
-            <Route path="/customer_panel" element={<CustomerPanel />} />
-
-            <Route
-              path="/viewCustomerServices"
-              element={<CustomerServices />}
-            />
-            <Route path="/successfulPayment" element={<PaymentSuccess />} />
-
-            <Route
-              path="/viewCustomerBookedServices"
-              element={<CustomerBookedServices />}
-            />
+            {customerRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
           </Route>
+
         </Routes>
       </div>
       <Footer />

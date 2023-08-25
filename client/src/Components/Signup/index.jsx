@@ -10,7 +10,7 @@ import {
   MDBInput,
 } from "mdb-react-ui-kit";
 import Loader from "../Loader";
-import axiosCall from "../../AxiosCall";
+import axiosCall from "../../Utils/AxiosCall";
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -76,41 +76,52 @@ const SignUp = () => {
                     Sign Up
                   </h1>
                   <h6 className="text-danger">{error}</h6>
-                  <MDBInput
-                    wrapperClass="mb-1"
-                    label="Name"
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                  <MDBInput
-                    wrapperClass="mb-1"
-                    label="Email"
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <MDBInput
-                    wrapperClass="mb-1"
-                    label="Password"
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
+                  <div className="mb-1">
+                    <label htmlFor="name" className="form-label">
+                      Name
+                    </label>
+                    <MDBInput
+                      id="name"
+                      name="name"
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-1">
+                    <label htmlFor="email" className="form-label">
+                      Email
+                    </label>
+                    <MDBInput
+                      id="email"
+                      name="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="mb-1">
+                    <label htmlFor="password" className="form-label">
+                      Password
+                    </label>
+                    <MDBInput
+                      id="password"
+                      name="password"
+                      type="password"
+                      required
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                  </div>
                   <MDBRow>
                     <MDBCol md="6">
+                      <label htmlFor="age" className="form-label">
+                        Age
+                      </label>
                       <MDBInput
                         wrapperClass="mb-1"
-                        label="Age"
                         id="age"
                         name="age"
                         type="number"
@@ -120,6 +131,9 @@ const SignUp = () => {
                       />
                     </MDBCol>
                     <MDBCol md="6" lg="6">
+                      <label htmlFor="gender" className="form-label">
+                        Gender
+                      </label>
                       <select
                         className="form-select mb-0"
                         id="gender"
@@ -132,52 +146,46 @@ const SignUp = () => {
                         <option value="female">Female</option>
                         <option value="other">Other</option>
                       </select>
-                      <label htmlFor="gender" className="form-label mb-4">
-                        Gender
+                    </MDBCol>
+                  </MDBRow>
+                  <MDBRow className="mb-4">
+                    <div className="d-flex align-items-center">
+                      <label className="form-label mx-2 mt-2">Role:</label>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="role"
+                        id="customerRadio"
+                        value="customer"
+                        required
+                        checked={formData.role === "customer"}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className="form-check-label mx-2"
+                        htmlFor="customerRadio"
+                      >
+                        Customer
                       </label>
-                    </MDBCol>
+                      <input
+                        className="form-check-input ms-3"
+                        type="radio"
+                        name="role"
+                        id="sellerRadio"
+                        value="seller"
+                        required
+                        checked={formData.role === "seller"}
+                        onChange={handleChange}
+                      />
+                      <label
+                        className="form-check-label mx-2"
+                        htmlFor="sellerRadio"
+                      >
+                        Seller
+                      </label>
+                    </div>
                   </MDBRow>
-                  <MDBRow>
-                    <MDBCol md="6">
-                      <label className="form-label mx-2">Role:</label>
-                      <div className="form-check form-check-inline mb-4">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="role"
-                          id="customerRadio"
-                          value="customer"
-                          required
-                          checked={formData.role === "customer"}
-                          onChange={handleChange}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="customerRadio"
-                        >
-                          Customer
-                        </label>
-                      </div>
-                      <div className="form-check form-check-inline">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="role"
-                          id="sellerRadio"
-                          value="seller"
-                          required
-                          checked={formData.role === "seller"}
-                          onChange={handleChange}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="sellerRadio"
-                        >
-                          Seller
-                        </label>
-                      </div>
-                    </MDBCol>
-                  </MDBRow>
+
                   <button
                     color="success"
                     className="btn btn-lg btn-success mb-4 px-5"

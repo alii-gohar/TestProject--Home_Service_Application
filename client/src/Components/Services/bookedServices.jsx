@@ -1,19 +1,17 @@
 import { useState, useEffect } from "react";
-import axiosCall from "../../AxiosCall";
+
+import axiosCall from "../../Utils/AxiosCall";
 import GenericTable from "../Table/Table";
+
 const BookedServices = () => {
   const [data, setData] = useState([]);
   const [message, setMessage] = useState("");
   const [ServiceStatus, setServiceStatus] = useState("OnGoing");
   const [shouldUpdate, setShouldUpdate] = useState(false);
-  const completeService = async (id) => {
+
+  const handleServiceCompletion = async (id) => {
     try {
-      const response = await axiosCall(
-        "PUT",
-        "seller/completeOnGoingService",
-        {},
-        id
-      );
+      const response = await axiosCall("PUT", "seller/completeService", {}, id);
       if (response.status === 200) {
         setMessage("Service Marked Completed Successfully");
         setData((prevData) => prevData.filter((item) => item._id !== id));
@@ -33,7 +31,7 @@ const BookedServices = () => {
       try {
         const response = await axiosCall(
           "GET",
-          "seller/viewBookedSellerServices",
+          "seller/bookedServices",
           {},
           ServiceStatus
         );
@@ -62,7 +60,7 @@ const BookedServices = () => {
     item.serviceId.averageRating,
   ]);
   const tableButtons = ["Mark Complete"];
-  const tableButtonFunctions = [completeService];
+  const tableButtonFunctions = [handleServiceCompletion];
   const dataIds = data.map((item) => [item._id]);
 
   return (
